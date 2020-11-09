@@ -1,10 +1,21 @@
 const init = () => {
+  // Import Controls
+  const fullScreenControl = new ol.control.FullScreen();
+  const mousePositionControl = new ol.control.MousePosition();
+  const overviewMapControl = new ol.control.OverviewMap({
+    collapsed: false,
+    layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+  });
+  const scaleLineControl = new ol.control.ScaleLine();
+  const zoomSliderControl = new ol.control.ZoomSlider();
+  const zoomToExtentControl = new ol.control.ZoomToExtent();
+
   const map = new ol.Map({
     view: new ol.View({
       center: [0, 0],
       zoom: 3,
-      maxZoom: 2,
-      rotation: 0.5,
+      maxZoom: 6,
+      minZoom: 2,
     }),
     layers: [
       new ol.layer.Tile({
@@ -13,9 +24,19 @@ const init = () => {
     ],
     target: "js-map",
     keyboardEventTarget: document,
-    controls: ol.control.defaults().extend([]),
+    controls: ol.control
+      .defaults()
+      .extend([
+        fullScreenControl,
+        mousePositionControl,
+        overviewMapControl,
+        scaleLineControl,
+        zoomSliderControl,
+        zoomToExtentControl,
+      ]),
   });
 
+  // Coordinates overlay
   const popupContainerElement = document.getElementById("popup-coordinates");
   const popup = new ol.Overlay({
     element: popupContainerElement,
@@ -38,6 +59,7 @@ const init = () => {
 
   map.addInteraction(dragRotateInteraction);
 
+  // Draw Interaction
   const drawInteraction = new ol.interaction.Draw({
     type: "Polygon",
     freehand: true,
