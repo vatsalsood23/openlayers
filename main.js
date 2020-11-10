@@ -1,4 +1,5 @@
 const init = () => {
+  // Attribution control
   const attributionControl = new ol.control.Attribution({
     collapsible: true,
   });
@@ -7,27 +8,8 @@ const init = () => {
     view: new ol.View({
       center: [0, 0],
       zoom: 3,
-      //   extent: [
-      //     7200979.560689885,
-      //     675091.8338146787,
-      //     10860172.978757843,
-      //     4412556.768846657,
-      //   ],
     }),
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM(),
-        zIndex: 1,
-        visible: false,
-        // Only this area of this layer will be visible
-        // extent: [
-        //   7200979.560689885,
-        //   675091.8338146787,
-        //   10860172.978757843,
-        //   4412556.768846657,
-        // ],
-      }),
-    ],
+
     target: "js-map",
     keyboardEventTarget: document,
     controls: ol.control
@@ -35,25 +17,23 @@ const init = () => {
       .extend([attributionControl]),
   });
 
-  // Layer Group
-  const layerGroup = new ol.layer.Group({
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.OSM({
-          url: "https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        }),
-        zIndex: 0,
-        visible: false,
-        // extent: [
-        //   7200979.560689885,
-        //   675091.8338146787,
-        //   10860172.978757843,
-        //   4412556.768846657,
-        // ],
-      }),
-    ],
+  // Base Layers
+  // Openstreet Map Standard
+  const openstreetMapStandardLayer = new ol.layer.Tile({
+    source: new ol.source.OSM(),
+    visible: true,
+    title: "OSMStandard",
   });
-  map.addLayer(layerGroup);
+
+  // Open Street map Humanitarian
+  const opemstreetMapHumanitarian = new ol.layer.Tile({
+    source: new ol.source.OSM({
+      url: "https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+    }),
+    zIndex: 0,
+    visible: false,
+    title: "OSMHumanitarian",
+  });
 
   // Carto DB layer
   const cartoDBBaseLayer = new ol.layer.Tile({
@@ -62,10 +42,9 @@ const init = () => {
         "https://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{scale}.png",
       attributions: "Cato",
     }),
-    visible: true,
+    visible: false,
+    title: "voyager_labels_under",
   });
-
-  map.addLayer(cartoDBBaseLayer);
 
   // Stamen basemap layer
   const stamenBaseLayer = new ol.layer.Tile({
@@ -73,9 +52,8 @@ const init = () => {
       layer: "terrain-labels",
     }),
     visible: false,
+    title: "StamenTerrainWithLabels",
   });
-
-  map.addLayer(stamenBaseLayer);
 
   // Stamen basemap layer
   const stamenBaseMapLayer = new ol.layer.Tile({
@@ -83,9 +61,36 @@ const init = () => {
       url: "http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
     }),
     visible: false,
+    title: "StamenTerrain",
   });
 
-  map.addLayer(stamenBaseMapLayer);
+  // Layer Group
+  const baseLayerGroup = new ol.layer.Group({
+    layers: [
+      openstreetMapStandardLayer,
+      opemstreetMapHumanitarian,
+      cartoDBBaseLayer,
+      stamenBaseLayer,
+      stamenBaseMapLayer,
+    ],
+  });
+  map.addLayer(baseLayerGroup);
+
+  // Layer switcher logic for base layers
+  const baseLayerElements = document.querySelectorAll(
+    ".sidebar > input[type=radio]"
+  );
+
+  for (let baseLayerElement of baseLayerElements) {
+    baseLayerElement.addEventListener("change", () => {
+      let baseLayerElementValue = this.value;
+      baseLayerGroup.getLayers().forEach((element, index, array) => {
+        console.log(element);
+        let baseLayerName = element.get("title");
+        element.setVisible(baseLayerName === baseLayerElementValue);
+      });
+    });
+  }
 
   //   tile ArcGIS REST API Layer
   const tileArcGISLayer = new ol.layer.Tile({
@@ -113,12 +118,6 @@ const init = () => {
   });
 
   map.addLayer(NOAAWMSLayer);
-
-  console.log(
-    NOAAWMSLayer.getSource().setAttributions(
-      '<a href="https://nowcoast.noaa.gov/">copyright noa</a>'
-    )
-  );
 };
 
 window.onload = init;
