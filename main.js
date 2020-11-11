@@ -129,10 +129,18 @@ const init = () => {
   );
   for (let tileRatserLaterElemet of tileRatserLaterElements) {
     tileRatserLaterElemet.addEventListener("change", (e) => {
-      console.log(e);
+      let tilRasterLayerElementValue = e.target.value;
+      let tileRasterLayer;
+      rasterTileLayerGroup.getLayers().forEach((element, index, array) => {
+        if (tilRasterLayerElementValue === element.get("title")) {
+          tileRasterLayer = element;
+        }
+      });
+      e.target.checked
+        ? tileRasterLayer.setVisible(true)
+        : tileRasterLayer.setVisible(false);
     });
   }
-  console.log(tileRatserLaterElements);
 };
 
 window.onload = init;
