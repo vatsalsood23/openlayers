@@ -64,6 +64,32 @@ const init = () => {
     title: "StamenTerrain",
   });
 
+  // Base Vector Layers
+  // Vector Tile Layer OpenstreetMap
+  // This will be applied to all the layers on the map if they are visible
+
+  const openstreetMapVectorTile = new ol.layer.VectorTile({
+    source: new ol.source.VectorTile({
+      url:
+        "https://api.maptiler.com/tiles/v3-4326/{z}/{x}/{y}.pbf?key=QeIUwoaCPC4IKWmLaAkB",
+      format: new ol.format.MVT(),
+      attributions:
+        '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    }),
+    visible: false,
+    title: "VectorTileLayerOpenStreetMap",
+  });
+
+  const openstreetMapVectorTileStyles =
+    "https://api.maptiler.com/maps/7014b9a5-04b3-4315-afe8-de034e5bfa73/style.json?key=QeIUwoaCPC4IKWmLaAkB";
+
+  fetch(openstreetMapVectorTileStyles).then(function (response) {
+    response.json().then(function (glStyle) {
+      olms.applyStyle(openstreetMapVectorTile, glStyle, "31ffb1ca-a60e-4a5d-a4d0-78fc608ead69");
+    });
+  });
+
+
   // Layer Group
   const baseLayerGroup = new ol.layer.Group({
     layers: [
@@ -72,6 +98,7 @@ const init = () => {
       cartoDBBaseLayer,
       stamenBaseLayer,
       stamenBaseMapLayer,
+      openstreetMapVectorTile,
     ],
   });
   map.addLayer(baseLayerGroup);
