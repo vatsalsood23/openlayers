@@ -83,9 +83,8 @@ const init = () => {
 
   for (let baseLayerElement of baseLayerElements) {
     baseLayerElement.addEventListener("change", () => {
-      let baseLayerElementValue = this.value;
+      let baseLayerElementValue = baseLayerElement.value;
       baseLayerGroup.getLayers().forEach((element, index, array) => {
-        console.log(element);
         let baseLayerName = element.get("title");
         element.setVisible(baseLayerName === baseLayerElementValue);
       });
@@ -99,8 +98,8 @@ const init = () => {
         "https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Specialty/ESRI_StateCityHighway_USA/MapServer",
     }),
     visible: false,
+    title: "TileArcGISLayer",
   });
-  map.addLayer(tileArcGISLayer);
 
   //   NOAA WMS Layer
   const NOAAWMSLayer = new ol.layer.Tile({
@@ -115,9 +114,25 @@ const init = () => {
       attributions: '<a href="https://nowcoast.noaa.gov/">copyright noa</a>',
     }),
     visible: false,
+    title: "NOAAWMSLayer",
   });
 
-  map.addLayer(NOAAWMSLayer);
+  const rasterTileLayerGroup = new ol.layer.Group({
+    layers: [tileArcGISLayer, NOAAWMSLayer],
+  });
+
+  map.addLayer(rasterTileLayerGroup);
+
+  // Logic Switcher for raster tile layers
+  const tileRatserLaterElements = document.querySelectorAll(
+    ".sidebar > input[type=checkbox]"
+  );
+  for (let tileRatserLaterElemet of tileRatserLaterElements) {
+    tileRatserLaterElemet.addEventListener("change", (e) => {
+      console.log(e);
+    });
+  }
+  console.log(tileRatserLaterElements);
 };
 
 window.onload = init;
