@@ -95,13 +95,57 @@ const init = () => {
 
   // Vector Layers
   // India GeoJSON Vector Layer
-  const IndiaGeoJSON = new ol.layer.Vector({
+  // Style for polygons
+  const fillStyle = new ol.style.Fill({
+    color: [66, 135, 245],
+  });
+
+  // Style for lines
+  const strokeStyle = new ol.style.Stroke({
+    color: [29, 54, 94, 1],
+    width: 1.2,
+  });
+
+  const regularShape = new ol.style.RegularShape({
+    fill: new ol.style.Fill({
+      color: [245, 49, 5, 1],
+    }),
+    stroke: strokeStyle,
+    points: 3,
+    radius: 15,
+  });
+
+  const circleStyle = new ol.style.Circle({
+    fill: new ol.style.Fill({
+      color: [245, 49, 5, 1],
+    }),
+    radius: 7,
+    stroke: strokeStyle,
+  });
+
+  // Icon Marker Style
+
+  const iconMarketStyle = new ol.style.Icon({
+    src: "./data/static_images/marker.png",
+    size: [100, 100],
+    offset: [0, 0],
+    opacity: 1,
+    scale: 0.5,
+    color: [10, 98, 240, 1],
+  });
+
+  const IndiaGeoJSON = new ol.layer.VectorImage({
     source: new ol.source.Vector({
       url: "./data/vector_data/map.geojson",
       format: new ol.format.GeoJSON(),
     }),
-    visible: false,
-    title: "IndiaGeoJson",
+    visible: true,
+    style: new ol.style.Style({
+      // Styling of vector features
+      // fill: fillStyle,
+      stroke: strokeStyle,
+      image: iconMarketStyle,
+    }),
   });
 
   //map.addLayer(IndiaGeoJSON);
@@ -222,6 +266,25 @@ const init = () => {
       overlayFeatureAdditionalInfo.innerHTML = clickedFeatureAdditionalInfo;
     });
   });
+
+  // // Select Interaction - For Styling Selected Points
+  // const selectInteraction = new ol.interaction.Select({
+  //   condition: ol.events.condition.singleClick,
+  //   style: new ol.style.Style({
+  //     image: new ol.style.Circle({
+  //       fill: new ol.style.Fill({
+  //         color: [247, 26, 10, 1],
+  //       }),
+  //       radius: 12,
+  //       stroke: new ol.style.Stroke({
+  //         color: [247, 26, 10, 1],
+  //         width: 3,
+  //       }),
+  //     }),
+  //   }),
+  // });
+
+  // map.addInteraction(selectInteraction);
 };
 
 window.onload = init;
