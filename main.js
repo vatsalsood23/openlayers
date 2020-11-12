@@ -85,10 +85,36 @@ const init = () => {
 
   fetch(openstreetMapVectorTileStyles).then(function (response) {
     response.json().then(function (glStyle) {
-      olms.applyStyle(openstreetMapVectorTile, glStyle, "31ffb1ca-a60e-4a5d-a4d0-78fc608ead69");
+      olms.applyStyle(
+        openstreetMapVectorTile,
+        glStyle,
+        "31ffb1ca-a60e-4a5d-a4d0-78fc608ead69"
+      );
     });
   });
 
+  // Vector Layers
+  // India GeoJSON Vector Layer
+  const IndiaGeoJSON = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      url: "./data/vector_data/map.geojson",
+      format: new ol.format.GeoJSON(),
+    }),
+    visible: false,
+    title: "IndiaGeoJson",
+  });
+
+  //map.addLayer(IndiaGeoJSON);
+
+  // India KML
+  // const IndiaKML = new ol.layer.Vector({
+  //   source: new ol.source.Vector({
+  //     url: "./data/vector_data/map.kml",
+  //     format: ol.format.KML(),
+  //   }),
+  //   visible: true,
+  // });
+  // map.addLayer(IndiaKML);
 
   // Layer Group
   const baseLayerGroup = new ol.layer.Group({
@@ -144,11 +170,11 @@ const init = () => {
     title: "NOAAWMSLayer",
   });
 
-  const rasterTileLayerGroup = new ol.layer.Group({
-    layers: [tileArcGISLayer, NOAAWMSLayer],
+  const layerGroup = new ol.layer.Group({
+    layers: [tileArcGISLayer, NOAAWMSLayer, IndiaGeoJSON],
   });
 
-  map.addLayer(rasterTileLayerGroup);
+  map.addLayer(layerGroup);
 
   // Logic Switcher for raster tile layers
   const tileRatserLaterElements = document.querySelectorAll(
@@ -158,7 +184,7 @@ const init = () => {
     tileRatserLaterElemet.addEventListener("change", (e) => {
       let tilRasterLayerElementValue = e.target.value;
       let tileRasterLayer;
-      rasterTileLayerGroup.getLayers().forEach((element, index, array) => {
+      layerGroup.getLayers().forEach((element, index, array) => {
         if (tilRasterLayerElementValue === element.get("title")) {
           tileRasterLayer = element;
         }
