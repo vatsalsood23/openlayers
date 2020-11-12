@@ -194,6 +194,34 @@ const init = () => {
         : tileRasterLayer.setVisible(false);
     });
   }
+
+  // Vector Feature Popup Information
+  const overlayContainerElement = document.querySelector(".overlay-container");
+  const overlayLayer = new ol.Overlay({
+    element: overlayContainerElement,
+  });
+
+  map.addOverlay(overlayLayer);
+
+  const overlayFeatureName = document.getElementById("feature-name");
+  const overlayFeatureAdditionalInfo = document.getElementById(
+    "feature-additional-info"
+  );
+
+  // Vector Feature Popup Information
+  // Vector Feature Popup Logic
+
+  map.on("click", (e) => {
+    overlayLayer.setPosition(undefined);
+    map.forEachFeatureAtPixel(e.pixel, (feature, layer) => {
+      let clickedCoordinate = e.coordinate;
+      let clickedFeatureName = feature.get("name");
+      let clickedFeatureAdditionalInfo = feature.get("additional info");
+      overlayLayer.setPosition(clickedCoordinate);
+      overlayFeatureName.innerHTML = clickedFeatureName;
+      overlayFeatureAdditionalInfo.innerHTML = clickedFeatureAdditionalInfo;
+    });
+  });
 };
 
 window.onload = init;
