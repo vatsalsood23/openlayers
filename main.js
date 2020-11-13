@@ -96,43 +96,70 @@ const init = () => {
   // Vector Layers
   // India GeoJSON Vector Layer
   // Style for polygons
-  const fillStyle = new ol.style.Fill({
-    color: [66, 135, 245],
-  });
 
-  // Style for lines
-  const strokeStyle = new ol.style.Stroke({
-    color: [29, 54, 94, 1],
-    width: 1.2,
-  });
-
-  const regularShape = new ol.style.RegularShape({
-    fill: new ol.style.Fill({
-      color: [245, 49, 5, 1],
+  const polygonStyle = new ol.style.Style({
+    image: new ol.style.Circle({
+      fill: new ol.style.Fill({
+        color: [245, 10, 14, 1],
+      }),
+      radius: 7,
+      stroke: new ol.style.Stroke({
+        color: [245, 10, 14, 1],
+        width: 2,
+      }),
     }),
-    stroke: strokeStyle,
-    points: 3,
-    radius: 15,
+    // fill: new ol.style.Fill({
+    //   color: [245, 10, 14, 1],
+    // }),
+    // radius: 7,
+    // stroke: new ol.style.Stroke({
+    //   color: [0, 0, 0],
+    //   width: 2,
+    // }),
   });
 
-  const circleStyle = new ol.style.Circle({
+  // Blye polygons
+  const blueCountruesStyle = new ol.style.Style({
     fill: new ol.style.Fill({
-      color: [245, 49, 5, 1],
+      color: [56, 41, 194, 1],
     }),
-    radius: 7,
-    stroke: strokeStyle,
   });
 
-  // Icon Marker Style
-
-  const iconMarketStyle = new ol.style.Icon({
-    src: "./data/static_images/marker.png",
-    size: [100, 100],
-    offset: [0, 0],
-    opacity: 1,
-    scale: 0.5,
-    color: [10, 98, 240, 1],
+  // Prple polygons style
+  const purpleCountruesStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: [164, 63, 204, 1],
+    }),
   });
+
+  const indiaStyle = (feature) => {
+    let geamoetryType = feature.getGeometry().getType();
+    let incomeProperty = feature.get("Income");
+
+    // Text Styles
+    let featureID = feature.get("ID");
+    let featureIdString = featureID.toString();
+
+    let textStyles = new ol.style.Style({
+      text: new ol.style.Text({
+        text: featureIdString,
+        scale: 1.5,
+        fill: new ol.style.Fill({
+          color: [18, 18, 18, 1],
+        }),
+      }),
+    });
+
+    if (geamoetryType === "Polygon") {
+      if (incomeProperty === "blue") {
+        feature.setStyle([blueCountruesStyle, textStyles]);
+      }
+      if (incomeProperty === "purple") {
+        feature.setStyle([purpleCountruesStyle, textStyles]);
+      }
+      // feature.setStyle([polygonStyle]);
+    }
+  };
 
   const IndiaGeoJSON = new ol.layer.VectorImage({
     source: new ol.source.Vector({
@@ -140,12 +167,7 @@ const init = () => {
       format: new ol.format.GeoJSON(),
     }),
     visible: true,
-    style: new ol.style.Style({
-      // Styling of vector features
-      // fill: fillStyle,
-      stroke: strokeStyle,
-      image: iconMarketStyle,
-    }),
+    style: indiaStyle,
   });
 
   //map.addLayer(IndiaGeoJSON);
@@ -256,11 +278,14 @@ const init = () => {
   // Vector Feature Popup Logic
 
   map.on("click", (e) => {
+    console.log("hi");
     overlayLayer.setPosition(undefined);
     map.forEachFeatureAtPixel(e.pixel, (feature, layer) => {
       let clickedCoordinate = e.coordinate;
       let clickedFeatureName = feature.get("name");
       let clickedFeatureAdditionalInfo = feature.get("additional info");
+      console.log("clickedFeatureName", clickedFeatureName);
+      console.log("clickedFeatureAdditionalInfo", clickedFeatureAdditionalInfo);
       overlayLayer.setPosition(clickedCoordinate);
       overlayFeatureName.innerHTML = clickedFeatureName;
       overlayFeatureAdditionalInfo.innerHTML = clickedFeatureAdditionalInfo;
