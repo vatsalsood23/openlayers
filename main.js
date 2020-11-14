@@ -148,17 +148,22 @@ const init = () => {
           color: [18, 18, 18, 1],
         }),
       }),
+      image: new ol.style.Icon({
+        src: "./data/static_images/marker.png",
+        imgSize: 23,
+      }),
     });
+    feature.setStyle([textStyles]);
 
-    if (geamoetryType === "Polygon") {
-      if (incomeProperty === "blue") {
-        feature.setStyle([blueCountruesStyle, textStyles]);
-      }
-      if (incomeProperty === "purple") {
-        feature.setStyle([purpleCountruesStyle, textStyles]);
-      }
-      // feature.setStyle([polygonStyle]);
-    }
+    // if (geamoetryType === "Polygon") {
+    //   if (incomeProperty === "blue") {
+    //     feature.setStyle([blueCountruesStyle, textStyles]);
+    //   }
+    //   if (incomeProperty === "purple") {
+    //     feature.setStyle([purpleCountruesStyle, textStyles]);
+    //   }
+    // feature.setStyle([polygonStyle]);
+    //}
   };
 
   const IndiaGeoJSON = new ol.layer.VectorImage({
@@ -170,17 +175,6 @@ const init = () => {
     style: indiaStyle,
   });
 
-  //map.addLayer(IndiaGeoJSON);
-
-  // India KML
-  // const IndiaKML = new ol.layer.Vector({
-  //   source: new ol.source.Vector({
-  //     url: "./data/vector_data/map.kml",
-  //     format: ol.format.KML(),
-  //   }),
-  //   visible: true,
-  // });
-  // map.addLayer(IndiaKML);
 
   // Layer Group
   const baseLayerGroup = new ol.layer.Group({
@@ -292,24 +286,17 @@ const init = () => {
     });
   });
 
-  // // Select Interaction - For Styling Selected Points
-  // const selectInteraction = new ol.interaction.Select({
-  //   condition: ol.events.condition.singleClick,
-  //   style: new ol.style.Style({
-  //     image: new ol.style.Circle({
-  //       fill: new ol.style.Fill({
-  //         color: [247, 26, 10, 1],
-  //       }),
-  //       radius: 12,
-  //       stroke: new ol.style.Stroke({
-  //         color: [247, 26, 10, 1],
-  //         width: 3,
-  //       }),
-  //     }),
+
+  // Add feature on map at coordinates
+
+  // var testFeature = new ol.layer.Image({
+  //   source: new ol.source.ImageStatic({
+  //     url: "./data/static_images/marker.png",
   //   }),
+  //   visible: true,
   // });
 
-  // map.addInteraction(selectInteraction);
+  // map.addLayer(testFeature);
 };
 
 window.onload = init;

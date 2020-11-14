@@ -12,11 +12,11 @@ body {
   width: 100vw;
 }
 
-.grid-container {
+/* .grid-container {
   display: grid;
   grid-template-columns: 20vw 80vw;
   grid-template-rows: 100vh;
-}
+} */
 
 .sidebar {
   margin-left: 15px;
